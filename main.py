@@ -1,9 +1,36 @@
-import datetime
+import requests
+import time
+from datetime import datetime
 
-print("3M Red Volume Scanner Started")
+# Telegram details (बाद में भरेंगे)
+BOT_TOKEN = ""
+CHAT_ID = ""
 
-time_now = datetime.datetime.now()
+def send_message(msg):
+    if BOT_TOKEN and CHAT_ID:
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        requests.post(url, data={"chat_id": CHAT_ID, "text": msg})
 
-print("Scanner check completed at:", time_now)
+def scanner():
+    now = datetime.now().strftime("%H:%M:%S")
 
-print("Waiting for next 5 minute candle...")
+    print("5 Minute Volume Scanner Running", now)
+
+    # yahan market data API jodenge
+    # abhi testing message
+
+    message = f"""
+🚨 5 Min Volume Scanner
+Time: {now}
+
+Scanner Active ✅
+Waiting for breakout stocks...
+"""
+
+    print(message)
+    send_message(message)
+
+
+while True:
+    scanner()
+    time.sleep(300)
