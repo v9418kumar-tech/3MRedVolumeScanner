@@ -1,6 +1,7 @@
 import yfinance as yf
 from datetime import datetime
 
+
 def scanner():
 
     now = datetime.now().strftime("%H:%M:%S")
@@ -12,9 +13,9 @@ def scanner():
         "SBIN.NS"
     ]
 
-    result = []
+    signals = []
 
-    print("5 Minute Volume Scanner Running", now)
+    print("5 Minute Red Green Volume Scanner Running", now)
 
     for symbol in stocks:
 
@@ -26,44 +27,40 @@ def scanner():
                 progress=False
             )
 
-            if data.empty:
+            if len(data) < 2:
                 continue
 
-            data["Volume_Avg"] = data["Volume"].rolling(5).mean()
+            current = data.iloc[-1]
+            previous = data.iloc[-2]
 
-            last_volume = data["Volume"].iloc[-1]
-            avg_volume = data["Volume_Avg"].iloc[-1]
+            current_open = float(current["Open"].iloc[0])
+            current_close = float(current["Close"].iloc[0])
+            current_volume = float(current["Volume"].iloc[0])
 
-            if hasattr(last_volume, "iloc"):
-                last_volume = last_volume.iloc[0]
+            previous_open = float(previous["Open"].iloc[0])
+            previous_close = float(previous["Close"].iloc[0])
+            previous_volume = float(previous["Volume"].iloc[0])
 
-            if hasattr(avg_volume, "iloc"):
-                avg_volume = avg_volume.iloc[0]
 
-            last_volume = float(last_volume)
-            avg_volume = float(avg_volume)
+            if (
+                current_close < current_open
+                and previous_close > previous_open
+                and current_volume > previous_volume
+            ):
+                signals.append(symbol)
 
-            if last_volume > avg_volume * 3:
-                result.append(
-                    f"{symbol} Volume Spike {int(last_volume)}"
-                )
 
         except Exception as e:
             print(symbol, e)
 
-    message = f"""
-🚨 5 Min Volume Scanner
 
-Time: {now}
+    print("\n🚨 ALERT")
 
-"""
-
-    if result:
-        message += "\n".join(result)
+    if signals:
+        for stock in signals:
+            print(stock, "Condition Completed")
     else:
-        message += "No Volume Spike Found"
-
-    print(message)
+        print("No Signal Found")
 
 
 scanner()
