@@ -9,13 +9,15 @@ CHAT_ID = "7416362918"
 def send_telegram(message):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
 
-    requests.get(
-        url,
-        params={
-            "chat_id": CHAT_ID,
-            "text": message
-        }
-    )
+    response = requests.get(
+    url,
+    params={
+        "chat_id": CHAT_ID,
+        "text": message
+    }
+)
+
+print(response.text)
 
 
 def scanner():
