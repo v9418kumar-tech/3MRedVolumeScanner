@@ -1,8 +1,7 @@
 import requests
-import time
 from datetime import datetime
 import yfinance as yf
-import pandas as pd
+
 
 # Telegram details (baad me bharenge)
 BOT_TOKEN = ""
@@ -35,14 +34,13 @@ def scanner():
     print(data.tail())
 
     message = f"""
-🚨 5 Min Volume Scanner
+5 Min Volume Scanner
 
 Time: {now}
 
 Stock: {symbol}
 
-Scanner Ready ✅
-Yahoo Finance Data Connected
+Yahoo Finance Data Connected ✅
 """
 
     print(message)
