@@ -1,7 +1,8 @@
 import requests
 import time
 from datetime import datetime
-
+import yfinance as yf
+import pandas as pd
 # Telegram details (बाद में भरेंगे)
 BOT_TOKEN = ""
 CHAT_ID = ""
