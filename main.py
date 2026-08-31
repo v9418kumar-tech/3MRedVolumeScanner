@@ -31,4 +31,4 @@ Waiting for breakout stocks...
     send_message(message)
 
 
-while scanner()
+scanner()
