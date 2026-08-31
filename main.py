@@ -14,9 +14,12 @@ def scanner():
         print("stocks.txt not found")
         return
 
+
     result = []
 
-    print("5 Min Red Green Volume Scanner Running", now)
+    print("5 Min Red Green Volume Scanner Running")
+    print("Time:", now)
+
 
     for symbol in stocks:
 
@@ -29,7 +32,7 @@ def scanner():
                 progress=False
             )
 
-            if data.empty or len(data) < 2:
+            if data.empty or len(data) < 3:
                 continue
 
 
@@ -37,15 +40,15 @@ def scanner():
             previous = data.iloc[-2]
 
 
-            current_open = float(current["Open"].iloc[0])
-            current_close = float(current["Close"].iloc[0])
+            current_open = float(current["Open"])
+            current_close = float(current["Close"])
 
-            previous_open = float(previous["Open"].iloc[0])
-            previous_close = float(previous["Close"].iloc[0])
+            previous_open = float(previous["Open"])
+            previous_close = float(previous["Close"])
 
 
-            current_volume = int(current["Volume"].iloc[0])
-            previous_volume = int(previous["Volume"].iloc[0])
+            current_volume = int(current["Volume"])
+            previous_volume = int(previous["Volume"])
 
 
             # Current candle Red
@@ -63,22 +66,21 @@ def scanner():
             if red_candle and green_previous and volume_condition:
 
                 result.append(
-                    f"{symbol} ALERT | Current Volume: {current_volume} | Previous Volume: {previous_volume}"
+                    f"🚨 ALERT {symbol} | Current Volume: {current_volume} | Previous Volume: {previous_volume}"
                 )
 
 
         except Exception as e:
-            print(symbol, e)
+            print(symbol, "Error")
 
 
     print("\n🚨 5 Min Red Green Volume Scanner")
 
-    print("Time:", now)
-
-
     if result:
+
         for r in result:
             print(r)
+
     else:
         print("No Signal Found")
 
