@@ -1,23 +1,24 @@
 import yfinance as yf
 from datetime import datetime
-import requests
-
-TELEGRAM_TOKEN = "8908511972:AAFWn-0KKs6YkyFPyrhZpX7nKDUE87g9u8Y"
-CHAT_ID = "7416362918"
+import smtplib
+from email.message import EmailMessage
 
 
-def send_telegram(message):
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+EMAIL_SENDER = "v58388761@gmail.com"
+EMAIL_PASSWORD = "rctl hsla uaod qrut"
+EMAIL_RECEIVER = "v58388761@gmail.com"
 
-    response = requests.get(
-    url,
-    params={
-        "chat_id": CHAT_ID,
-        "text": message
-    }
-)
 
-print(response.text)
+def send_email(message):
+    msg = EmailMessage()
+    msg["Subject"] = "Stock Scanner Alert"
+    msg["From"] = EMAIL_SENDER
+    msg["To"] = EMAIL_RECEIVER
+    msg.set_content(message)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
+        smtp.send_message(msg)
 
 
 def scanner():
@@ -37,6 +38,7 @@ def scanner():
     for symbol in stocks:
 
         try:
+
             data = yf.download(
                 symbol,
                 period="2d",
@@ -44,6 +46,7 @@ def scanner():
                 progress=False,
                 auto_adjust=False
             )
+
 
             if len(data) < 3:
                 continue
@@ -65,7 +68,9 @@ def scanner():
 
 
             red = current_close < current_open
+
             green = previous_close > previous_open
+
             volume = current_volume > previous_volume
 
 
@@ -79,7 +84,7 @@ def scanner():
 
                 print(message)
 
-                send_telegram(message)
+                send_email(message)
 
 
         except Exception:
