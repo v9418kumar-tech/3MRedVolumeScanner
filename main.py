@@ -1,24 +1,23 @@
 import yfinance as yf
 from datetime import datetime
-import smtplib
-from email.message import EmailMessage
+import requests
 
 
-EMAIL_SENDER = "v58388761@gmail.com"
-EMAIL_PASSWORD = "rctl hsla uaod qrut"
-EMAIL_RECEIVER = "v58388761@gmail.com"
+TELEGRAM_TOKEN = "8908511972:AAGfjfmDqOs9f6kKXD8wuqYUYsWtjeW2_bw"
+CHAT_ID = "7416362918"
 
 
-def send_email(message):
-    msg = EmailMessage()
-    msg["Subject"] = "Stock Scanner Alert"
-    msg["From"] = EMAIL_SENDER
-    msg["To"] = EMAIL_RECEIVER
-    msg.set_content(message)
+def send_telegram(message):
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-    
-        smtp.send_message(msg)
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+
+    requests.get(
+        url,
+        params={
+            "chat_id": CHAT_ID,
+            "text": message
+        }
+    )
 
 
 def scanner():
@@ -47,14 +46,11 @@ def scanner():
                 auto_adjust=False
             )
 
-
             if len(data) < 3:
                 continue
 
-
             current = data.iloc[-2]
             previous = data.iloc[-3]
-
 
             current_open = float(current["Open"])
             current_close = float(current["Close"])
@@ -62,15 +58,12 @@ def scanner():
             previous_open = float(previous["Open"])
             previous_close = float(previous["Close"])
 
-
             current_volume = int(current["Volume"])
             previous_volume = int(previous["Volume"])
 
 
             red = current_close < current_open
-
             green = previous_close > previous_open
-
             volume = current_volume > previous_volume
 
 
@@ -84,7 +77,7 @@ def scanner():
 
                 print(message)
 
-                send_email(message)
+                send_telegram(message)
 
 
         except Exception:
