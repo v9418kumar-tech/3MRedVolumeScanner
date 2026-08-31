@@ -17,7 +17,7 @@ def send_email(message):
     msg.set_content(message)
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-        smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
+    
         smtp.send_message(msg)
 
 
