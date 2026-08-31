@@ -1,15 +1,20 @@
 import yfinance as yf
 from datetime import datetime
 
-
 def scanner():
 
     now = datetime.now().strftime("%H:%M:%S")
 
-    with open("stocks.txt", "r") as file:
-        stocks = [x.strip() for x in file.readlines() if x.strip()]
+    stocks = []
 
-    alerts = []
+    try:
+        with open("stocks.txt", "r") as f:
+            stocks = [x.strip() for x in f.readlines() if x.strip()]
+    except:
+        print("stocks.txt not found")
+        return
+
+    result = []
 
     print("5 Min Red Green Volume Scanner Running", now)
 
@@ -23,53 +28,46 @@ def scanner():
                 progress=False
             )
 
-            if len(data) < 3:
+            if data.empty or len(data) < 2:
                 continue
 
-            # Last two completed candles
-            previous = data.iloc[-2]
             current = data.iloc[-1]
-
-            previous_open = float(previous["Open"])
-            previous_close = float(previous["Close"])
-            previous_volume = float(previous["Volume"])
+            previous = data.iloc[-2]
 
             current_open = float(current["Open"])
             current_close = float(current["Close"])
-            current_volume = float(current["Volume"])
+            previous_open = float(previous["Open"])
+            previous_close = float(previous["Close"])
 
+            current_volume = int(current["Volume"])
+            previous_volume = int(previous["Volume"])
 
-            # Condition
-            if (
-                previous_close > previous_open
-                and current_close < current_open
-                and current_volume > previous_volume
-            ):
+            # Current candle Red
+            red_candle = current_close < current_open
 
-                alerts.append(
-                    f"""
-🚨 5 Min Red Volume Alert
+            # Previous candle Green
+            green_previous = previous_close > previous_open
 
-Stock: {symbol}
+            # Current volume greater than previous volume
+            volume_condition = current_volume > previous_volume
 
-Previous Green Volume:
-{int(previous_volume)}
+            if red_candle and green_previous and volume_condition:
 
-Current Red Volume:
-{int(current_volume)}
-
-Condition Completed ✅
-"""
+                result.append(
+                    f"{symbol} ALERT | Current Vol: {current_volume} | Previous Vol: {previous_volume}"
                 )
-
 
         except Exception as e:
             print(symbol, e)
 
 
-    if alerts:
-        print("\n".join(alerts))
+    print("\n🚨 5 Min Red Green Volume Scanner")
 
+    print("Time:", now)
+
+    if result:
+        for r in result:
+            print(r)
     else:
         print("No Signal Found")
 
