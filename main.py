@@ -19,13 +19,15 @@ def scanner():
     # yahan market data API jodenge
     # abhi testing message
 
-    message = f"""
+message = f"""
 🚨 5 Min Volume Scanner
+
 Time: {now}
 
-Scanner Active ✅
-Waiting for breakout stocks...
+Scanner Ready ✅
+Waiting for market data...
 """
+
 
     print(message)
     send_message(message)
