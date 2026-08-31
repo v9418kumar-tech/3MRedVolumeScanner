@@ -33,8 +33,17 @@ def scanner():
 
             data["Volume_Avg"] = data["Volume"].rolling(5).mean()
 
-            last_volume = float(data["Volume"].iloc[-1].item())
-avg_volume = float(data["Volume_Avg"].iloc[-1].item())
+            last_volume = data["Volume"].iloc[-1]
+avg_volume = data["Volume_Avg"].iloc[-1]
+
+if hasattr(last_volume, "iloc"):
+    last_volume = last_volume.iloc[0]
+
+if hasattr(avg_volume, "iloc"):
+    avg_volume = avg_volume.iloc[0]
+
+last_volume = float(last_volume)
+avg_volume = float(avg_volume)
 
             if last_volume > avg_volume * 3:
 
