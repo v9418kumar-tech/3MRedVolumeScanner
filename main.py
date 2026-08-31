@@ -1,7 +1,9 @@
-import time
+import datetime
 
 print("3M Red Volume Scanner Started")
 
-while True:
-    print("Scanner is running...")
-    time.sleep(180)
+time_now = datetime.datetime.now()
+
+print("Scanner check completed at:", time_now)
+
+print("Waiting for next 5 minute candle...")
