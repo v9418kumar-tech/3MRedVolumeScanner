@@ -6,12 +6,9 @@ def scanner():
 
     now = datetime.now().strftime("%H:%M:%S")
 
-    stocks = [
-        "RELIANCE.NS",
-        "HDFCBANK.NS",
-        "ICICIBANK.NS",
-        "SBIN.NS"
-    ]
+    # Read stocks from stocks.txt
+    with open("stocks.txt", "r") as file:
+        stocks = [line.strip() for line in file if line.strip()]
 
     signals = []
 
@@ -33,13 +30,13 @@ def scanner():
             current = data.iloc[-1]
             previous = data.iloc[-2]
 
-            current_open = float(current["Open"].iloc[0])
-            current_close = float(current["Close"].iloc[0])
-            current_volume = float(current["Volume"].iloc[0])
+            current_open = float(current["Open"])
+            current_close = float(current["Close"])
+            current_volume = float(current["Volume"])
 
-            previous_open = float(previous["Open"].iloc[0])
-            previous_close = float(previous["Close"].iloc[0])
-            previous_volume = float(previous["Volume"].iloc[0])
+            previous_open = float(previous["Open"])
+            previous_close = float(previous["Close"])
+            previous_volume = float(previous["Volume"])
 
 
             if (
