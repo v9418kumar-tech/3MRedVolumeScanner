@@ -1,6 +1,6 @@
 import yfinance as yf
-import pandas as pd
 from datetime import datetime
+
 
 def scanner():
 
@@ -8,7 +8,6 @@ def scanner():
 
     stocks = [
         "RELIANCE.NS",
-        "TATAMOTORS.NS",
         "HDFCBANK.NS",
         "ICICIBANK.NS",
         "SBIN.NS"
@@ -21,6 +20,7 @@ def scanner():
     for symbol in stocks:
 
         try:
+
             data = yf.download(
                 symbol,
                 period="1d",
@@ -28,23 +28,23 @@ def scanner():
                 progress=False
             )
 
-            if len(data) < 5:
+            if data.empty:
                 continue
 
             data["Volume_Avg"] = data["Volume"].rolling(5).mean()
 
-            last = data.iloc[-1]
+            last_volume = float(data["Volume"].iloc[-1])
+            avg_volume = float(data["Volume_Avg"].iloc[-1])
 
-            volume = float(last["Volume"])
-            avg_volume = float(last["Volume_Avg"])
+            if last_volume > avg_volume * 3:
 
-            if volume > avg_volume * 3:
                 result.append(
-                    f"{symbol} Volume Spike {volume:.0f}"
+                    f"{symbol} Volume Spike {int(last_volume)}"
                 )
 
         except Exception as e:
             print(symbol, e)
+
 
     message = f"""
 🚨 5 Min Volume Scanner
@@ -57,6 +57,7 @@ Time: {now}
         message += "\n".join(result)
     else:
         message += "No Volume Spike Found"
+
 
     print(message)
 
