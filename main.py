@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 
 
-TELEGRAM_TOKEN = "8908511972:AAGfjfmDqOs9f6kKXD8wuqYUYsWtjeW2_bw"
+TELEGRAM_TOKEN = "8908511972:AAFYjKWiTi9tU5GOhEQlhECtPzIJ2ux7hNI"
 CHAT_ID = "7416362918"
 
 
